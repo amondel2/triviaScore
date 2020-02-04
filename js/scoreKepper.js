@@ -1,4 +1,3 @@
-"use strict";
 $(document).ready(function () {
     $("#initsetup1").modal({
         keyboard: false,
@@ -9,9 +8,38 @@ $(document).ready(function () {
         focus: false,
         show: false,
     });
+    $("#initsetup2").on('hidden.bs.modal', function(e) {
+        if(teamNames.length === teams) {
+            $("#initsetup2").modal('hide');
+        } else {
+            $("#initsetup2").modal('show');
+        }
+    });
+    $("#initsetup1").on('hidden.bs.modal', function(e) {
+        if(isNaN(parseInt(rounds) )|| isNaN(parseInt(teams))) {
+            $("#initsetup1").modal('show');
+        } else {
+            $("#initsetup1").modal('hide');
+        }
+    });
     $("#initsetup1").modal('show');
     $("#AddTeam").on('click',addTeam);
+    $("#liveSort").on('click',function () {
+        if($("#liveSort").hasClass("btn-success")) {
+            $("#liveSort").removeClass("btn-success");
+            $("#liveSort").addClass("btn-danger");
+            $("#liveSort").text("Turn Live Sorting is On");
+        } else {
+            $("#liveSort").removeClass("btn-danger");
+            $("#liveSort").addClass("btn-success");
+            $("#liveSort").text("Turn Live Sorting is Off");
+        }
+    });
 
+    $("#manSortAndScore").on('click',function () {
+        scoreTable();
+        sortTable();
+    });
 });
 
 var rounds, teams;
@@ -63,25 +91,32 @@ function initalizeTeams(teamNumber) {
     $("#initsetup2").modal('show');
 }
 
+const scoreAndSort = function () {
+    scoreTable();
+    if($("#liveSort").hasClass("btn-success"))
+        sortTable();
+};
+
+const scoreTable = function() {
+    for (let i = 0; i < teams; i++) {
+        let id = "#teamRow" + i;
+        let sum = 0;
+        $.each($(id).children().find('input'), function (e, v) {
+            let newNum = parseInt($(v).val());
+            if (!isNaN(newNum))
+                sum += newNum;
+        });
+        $(id).children().find('span').text(sum);
+    }
+};
+
 function initLiveScore() {
     $( "#scoreTable tbody tr td input" ).off( "blur focusout");
-    $( "#scoreTable tbody tr td input" ).on( "blur focusout", function() {
-        for (let i = 0; i < teams; i++) {
-            let id = "#teamRow" + i;
-            let sum = 0;
-            $.each($(id).children().find('input'), function(e,v) {
-                let newNum = parseInt($(v).val());
-                if(!isNaN(newNum))
-                    sum += newNum;
-            });
-            $(id).children().find('span').text(sum);
-        }
-        sortTable();
-    });
+    $( "#scoreTable tbody tr td input" ).on( "blur focusout",scoreAndSort );
 }
 
 function createScoreTable(){
-    var teamScore = intialScoreTable();
+    let teamScore = intialScoreTable();
     teamScore += initalTeamRows();
     $("#scoreTable").html(teamScore);
     initLiveScore();
@@ -103,10 +138,10 @@ var addTeam = function() {
     initalizeTeams(teamNames.length + 1);
 };
 
-var intialScoreTable = function() {
+const intialScoreTable = function () {
     let tbl = "<table class=\"table table-striped table-bordered\" id='scoreTbl'><thead class=\"thead-dark\"><tr><th>Team Name</th>"
-    for(let i = 1; i <= rounds; i++) {
-        tbl += "<th>Round "+ i +"</th>"
+    for (let i = 1; i <= rounds; i++) {
+        tbl += "<th>Round " + i + "</th>"
     }
     return tbl + "<th>Total Score</th></thead>"
 };
@@ -130,7 +165,7 @@ function initSingleTeamRow(x) {
 }
 
 function sortTable(){
-    var table, rows, switching, i, x, y, shouldSwitch;
+    let table, rows, switching, i, x, y, shouldSwitch;
     table = document.getElementById("scoreTbl");
     switching = true;
     let rowIndex = parseInt(rounds) + 1;
