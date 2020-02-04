@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Trivia Score Card</title>
+    <script type="application/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript" src="js/bootstrap.bundle.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="application/javascript">
+        window.addEventListener('beforeunload', (event) => {
+            // Cancel the event as stated by the standard.
+            event.preventDefault();
+            // Chrome requires returnValue to be set.
+            event.returnValue = '';
+        });
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+
+    <div id="scoreTable" class="table-responsive-lg">
+
+    </div>
+
+    <div>
+        <button class="btn btn-primary" id="AddTeam">Add Team</button>
+        <button class="btn btn-secondary" id="resetBtn">Rest Form</button>
+    </div>
+</div>
+
+    <div class="modal fade" id="initsetup1" tabindex="-1" role="dialog" aria-labelledby="initsetup1Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="initsetup1Label">Teams Setup</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="teamsetp1frm">
+                        <div class="form-group">
+                            <label for="team-number" class="col-form-label">Number Of Teams:</label>
+                            <input type="number" required step="1" min="1" max="50"  value="10" class="form-control" id="team-number">
+                        </div>
+                        <div class="form-group">
+                            <label for="round-numbers" class="col-form-label">Number of Rounds:</label>
+                            <input type="number"  required step="1" min="1" max="25" value="10"  class="form-control"  id="round-numbers" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="mdsetupContinueBtn1" class="btn btn-primary">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="initsetup2" tabindex="-1" role="dialog" aria-labelledby="initsetup2Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content ">
+        <div class="modal-header">
+            <h5 class="modal-title" id="initsetup2Label">Teams Setup</h5>
+        </div>
+        <div class="modal-body">
+            <form id="initsetup2frm">
+                <div class="form-group">
+                    <label for="team-name" class="col-form-label">Enter Name for Team Number <span id="initsetup2teamnumber"></span></label>
+                    <input type="text" required minlength="6" maxlength="255" value="" class="form-control" id="team-name">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="mdsetupContinueBtn2" class="btn btn-primary">Continue</button>
+        </div>
+    </div>
+</div>
+</div>
+<script type="application/javascript" src="js/scoreKepper.js"></script>
+</body>
+</html>
