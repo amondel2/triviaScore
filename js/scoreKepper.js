@@ -8,6 +8,8 @@ $(document).ready(function () {
         focus: false,
         show: false,
     });
+    $('#quickSetup').prop('checked', false);
+
     $("#initsetup2").on('hidden.bs.modal', function(e) {
         if(teamNames.length === teams) {
             $("#initsetup2").modal('hide');
@@ -28,11 +30,11 @@ $(document).ready(function () {
         if($("#liveSort").hasClass("btn-success")) {
             $("#liveSort").removeClass("btn-success");
             $("#liveSort").addClass("btn-danger");
-            $("#liveSort").text("Turn Live Sorting is On");
+            $("#liveSort").text("Turn Live Sorting On");
         } else {
             $("#liveSort").removeClass("btn-danger");
             $("#liveSort").addClass("btn-success");
-            $("#liveSort").text("Turn Live Sorting is Off");
+            $("#liveSort").text("Turn Live Sorting Off");
         }
     });
 
@@ -51,7 +53,14 @@ $("#mdsetupContinueBtn1").on('click',function () {
         rounds = parseInt($("#round-numbers").val());
         teams = parseInt($("#team-number").val());
         $("#initsetup1").modal('hide');
-        initalizeTeams(1);
+        if($('#quickSetup').is(":checked")) {
+            for(var i=1;i<=teams;i++) {
+                teamNames.push("Team " + i);
+            }
+            createScoreTable();
+        } else {
+            initalizeTeams(1);
+        }
     } else
         alert( messages + "Please Correct The Above Errors Before Continuing" );
 });
@@ -87,7 +96,7 @@ function validateForm(frmName) {
 
 function initalizeTeams(teamNumber) {
     $("#initsetup2teamnumber").text(teamNumber);
-    $("#team-name").val("");
+    $("#team-name").val("Team " + teamNumber);
     $("#initsetup2").modal('show');
 }
 
@@ -120,6 +129,7 @@ function createScoreTable(){
     teamScore += initalTeamRows();
     $("#scoreTable").html(teamScore);
     initLiveScore();
+    addUpdateEvents();
 }
 
 var addTeam = function() {
@@ -154,9 +164,24 @@ function initalTeamRows(){
     return tbl + "</tbody></table>";
 }
 
+
+function addUpdateEvents() {
+   $(document).on('click', 'table tr td:first-child',function(){
+       var cnmame = $(this).text();
+       $(this).html("<input type='text' value='"+ cnmame +"'>");
+       $(this).children().first().focus();
+    });
+    $(document).on('blur focusout', 'table tr td:first-child', function(){
+        var newName = $(this).children().val();
+        if(newName && newName.length > 5) {
+            $(this).html(newName);
+        }
+    });
+}
+
 function initSingleTeamRow(x) {
     let tbl = "";
-    tbl += "<tr id='teamRow"+x+"'><td>" + teamNames[x] + "</td>"
+    tbl += "<tr id='teamRow"+x+"'><td id='teamName" + x + "'>" + teamNames[x] + "</td>"
     for (let i = 1; i <= rounds; i++) {
         let id = "round" + i + "team" + x;
         tbl += "<td><input type='number' id='"+id+"' step=1 min='-10000' max='10000'></td>";
